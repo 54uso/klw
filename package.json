@@ -1,0 +1,6 @@
+{
+  "name": "klw",
+  "version": "1.0.0",
+  "description": "LLM Wiki 知识库管理技能集",
+  "type": "module"
+}
