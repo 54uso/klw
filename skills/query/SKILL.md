@@ -1,5 +1,5 @@
 ---
-name: query
+name: klw-query
 description: |
   对知识库提问。搜索 wiki 页面，综合信息回答，附带引用。好答案可归档为新页面。
   使用场景："问知识库"、"查一下"、"关于X的知识"、"klw query"。
@@ -11,10 +11,7 @@ description: |
 
 ## 知识库路径
 
-执行前先读取配置获取知识库路径：
-1. 读取 `{baseDir}/../../klw.json` 中的 `knowledgeBase` 字段（`{baseDir}` 为本 SKILL.md 所在目录）
-2. 如果为空或文件不存在，提示用户先执行 `/klw:init` 初始化知识库
-3. 后续所有路径基于该值（记为 `$KB`）
+知识库路径：`{knowledgeBase}`（记为 `$KB`）
 
 ## 流程
 

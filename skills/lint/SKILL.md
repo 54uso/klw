@@ -1,5 +1,5 @@
 ---
-name: lint
+name: klw-lint
 description: |
   对知识库进行健康检查。检测矛盾、过时、孤立页面、缺失交叉引用等问题。
   使用场景："检查知识库"、"wiki健康检查"、"lint wiki"、"巡检"。
@@ -11,10 +11,7 @@ description: |
 
 ## 知识库路径
 
-执行前先读取配置获取知识库路径：
-1. 读取 `{baseDir}/../../klw.json` 中的 `knowledgeBase` 字段（`{baseDir}` 为本 SKILL.md 所在目录）
-2. 如果为空或文件不存在，提示用户先执行 `/klw:init` 初始化知识库
-3. 后续所有路径基于该值（记为 `$KB`）
+知识库路径：`{knowledgeBase}`（记为 `$KB`）
 
 ## 流程
 
