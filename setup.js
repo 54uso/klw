@@ -113,37 +113,40 @@ function initKnowledgeBase(kbPath) {
 function installSkills(tool, kbPath) {
     const names = getSkillNames();
 
-    let destDir;
-    if (tool === 'opencode') {
-        destDir = join(homedir(), '.config', 'opencode', 'skills');
-    } else {
-        destDir = resolve(__dirname, '.claude', 'skills');
-    }
+    const tools = tool === 'all' ? ['opencode', 'claude'] : [tool];
 
-    if (!existsSync(destDir)) {
-        mkdirSync(destDir, { recursive: true });
-    }
-
-    console.log(`\n安装 ${tool === 'opencode' ? 'OpenCode' : 'Claude Code'} 技能...\n`);
-
-    for (const name of names) {
-        const skillDir = resolve(skillsDir, name);
-        const skillFile = resolve(skillDir, 'SKILL.md');
-        if (!existsSync(skillFile)) {
-            console.log(`  ✗ ${name} — SKILL.md 不存在，跳过`);
-            continue;
+    for (const t of tools) {
+        let destDir;
+        if (t === 'opencode') {
+            destDir = join(homedir(), '.config', 'opencode', 'skills');
+        } else {
+            destDir = join(homedir(), '.claude', 'skills');
         }
 
-        const dest = tool === 'opencode' ? join(destDir, `klw-${name}`) : join(destDir, name);
-        try {
-            cpSync(skillDir, dest, { recursive: true });
-            // 写入知识库路径
-            let content = readFileSync(join(dest, 'SKILL.md'), 'utf-8');
-            content = content.replace(/\{knowledgeBase\}/g, kbPath);
-            writeFileSync(join(dest, 'SKILL.md'), content, 'utf-8');
-            console.log(`  ✓ ${dest}`);
-        } catch (e) {
-            console.log(`  ✗ ${name} — 复制失败: ${e.message}`);
+        if (!existsSync(destDir)) {
+            mkdirSync(destDir, { recursive: true });
+        }
+
+        console.log(`\n安装 ${t === 'opencode' ? 'OpenCode' : 'Claude Code'} 技能...\n`);
+
+        for (const name of names) {
+            const skillDir = resolve(skillsDir, name);
+            const skillFile = resolve(skillDir, 'SKILL.md');
+            if (!existsSync(skillFile)) {
+                console.log(`  ✗ ${name} — SKILL.md 不存在，跳过`);
+                continue;
+            }
+
+            const dest = join(destDir, `klw-${name}`);
+            try {
+                cpSync(skillDir, dest, { recursive: true });
+                let content = readFileSync(join(dest, 'SKILL.md'), 'utf-8');
+                content = content.replace(/\{knowledgeBase\}/g, kbPath);
+                writeFileSync(join(dest, 'SKILL.md'), content, 'utf-8');
+                console.log(`  ✓ ${dest}`);
+            } catch (e) {
+                console.log(`  ✗ ${name} — 复制失败: ${e.message}`);
+            }
         }
     }
 }
@@ -153,7 +156,7 @@ function uninstallSkills(target) {
 
     const targets = {
         opencode: join(homedir(), '.config', 'opencode', 'skills'),
-        claude: resolve(__dirname, '.claude', 'skills'),
+        claude: join(homedir(), '.claude', 'skills'),
     };
 
     const tools = target === 'all' ? Object.keys(targets) : [target];
@@ -165,9 +168,8 @@ function uninstallSkills(target) {
             continue;
         }
 
-        const prefix = tool === 'opencode' ? 'klw-' : '';
         const entries = readdirSync(dir, { withFileTypes: true })
-            .filter(d => d.isDirectory() && d.name.startsWith(prefix));
+            .filter(d => d.isDirectory() && d.name.startsWith('klw-'));
 
         for (const entry of entries) {
             const fullPath = join(dir, entry.name);
